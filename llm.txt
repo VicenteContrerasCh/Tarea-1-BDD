@@ -1,0 +1,116 @@
+Peticion: realiza la parte 4.2. para yo poder comparar
+Para que puedas completar la **Parte 4.2 (Parte A)** de tu tarea y comparar este resultado con tu diseño individual (Parte 0), a continuación te presento la simulación exacta de lo que pide la rúbrica: el prompt utilizado copiando los requerimientos, el esquema SQL generado por el LLM, y el análisis crítico detallando errores y decisiones de diseño.
+
+***
+
+### 4.2. Parte A: Esquema con LLM y análisis crítico
+
+#### 1. Prompt utilizado y respuesta del LLM
+
+**Prompt ingresado al LLM:**
+> Diseña un esquema de base de datos relacional para PostgreSQL basado exactamente en los siguientes requerimientos:
+> 1. Torneos. La organización realiza múltiples torneos. Cada torneo tiene un nombre, el título del videojuego que se juega, fechas de inicio y fin, y un pozo de premios (prize pool) en USD. [cite_start]Además tiene un número máximo de equipos por participar. [cite: 27, 28]
+> 2. Jugadores. [cite_start]Los jugadores se registran en la plataforma con un gamertag (único), su nombre real, email, fecha de nacimiento y país de origen. [cite: 29]
+> 3. Equipos. Los jugadores forman equipos (de un numero no acotado de jugadores). Cada equipo tiene un nombre único, una fecha de creación y un capitán. El capitán debe ser miembro del equipo. [cite_start]Un jugador pertenece a exactamente un equipo (la membresía es fija, no cambia entre torneos). [cite: 30, 31, 32]
+> 4. Inscripción a torneos. Los equipos se inscriben en torneos. Cada torneo tiene un número máximo de equipos que pueden participar. [cite_start]Un equipo puede inscribirse en múltiples torneos. [cite: 33, 34]
+> 5. Partidas. Dentro de un torneo se juegan partidas (matches). Cada partida enfrenta a exactamente dos equipos distintos, tiene una fecha y hora programada, un resultado (puntaje equipo A y puntaje equipo B) y una fase del torneo. [cite_start]Las fases posibles son: fase de grupos, cuartos de final, semifinal, final. [cite: 35, 36, 37]
+> 6. Estadísticas individuales. [cite_start]Para cada partida se registran las estadísticas de cada jugador de los equipos participantes: KOs, restarts y assists. [cite: 40]
+> 7. Sponsors. Empresas pueden auspiciar torneos. De cada sponsor se conoce su nombre, industria (tecnología, bebidas, ropa, etc.) y el monto en USD que aporta a cada torneo que auspicia. [cite_start]Un sponsor puede auspiciar múltiples torneos. [cite: 41, 42]
+
+**Respuesta completa del LLM (Código SQL Propuesto):**
+
+```sql
+-- 1. Tabla de Equipos (Creación parcial para resolver dependencia circular)
+CREATE TABLE Equipos (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) UNIQUE NOT NULL,
+    fecha_creacion DATE NOT NULL,
+    capitan_gamertag VARCHAR(255) -- Se añade la FK después
+);
+
+-- 2. Tabla de Jugadores
+CREATE TABLE Jugadores (
+    gamertag VARCHAR(255) PRIMARY KEY,
+    nombre_real VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    pais_origen VARCHAR(100) NOT NULL,
+    equipo_id INT REFERENCES Equipos(id) NOT NULL
+);
+
+-- Agregar la clave foránea del capitán a la tabla Equipos
+ALTER TABLE Equipos
+ADD CONSTRAINT fk_capitan
+FOREIGN KEY (capitan_gamertag) REFERENCES Jugadores(gamertag);
+
+-- 3. Tabla de Torneos
+CREATE TABLE Torneos (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    titulo_videojuego VARCHAR(255) NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    prize_pool_usd DECIMAL(10, 2) NOT NULL,
+    max_equipos INT NOT NULL
+);
+
+-- 4. Tabla de Inscripciones a Torneos
+CREATE TABLE Inscripciones (
+    torneo_id INT REFERENCES Torneos(id),
+    equipo_id INT REFERENCES Equipos(id),
+    PRIMARY KEY (torneo_id, equipo_id)
+);
+
+-- 5. Tabla de Partidas
+CREATE TABLE Partidas (
+    id SERIAL PRIMARY KEY,
+    torneo_id INT REFERENCES Torneos(id) NOT NULL,
+    equipo_a_id INT REFERENCES Equipos(id) NOT NULL,
+    equipo_b_id INT REFERENCES Equipos(id) NOT NULL,
+    fecha_hora TIMESTAMP NOT NULL,
+    puntaje_a INT,
+    puntaje_b INT,
+    fase VARCHAR(50) CHECK (fase IN ('fase de grupos', 'cuartos de final', 'semifinal', 'final')) NOT NULL,
+    CHECK (equipo_a_id != equipo_b_id)
+);
+
+-- 6. Tabla de Estadísticas Individuales
+CREATE TABLE Estadisticas_Individuales (
+    partida_id INT REFERENCES Partidas(id),
+    jugador_gamertag VARCHAR(255) REFERENCES Jugadores(gamertag),
+    kos INT DEFAULT 0,
+    restarts INT DEFAULT 0,
+    assists INT DEFAULT 0,
+    PRIMARY KEY (partida_id, jugador_gamertag)
+);
+
+-- 7. Tabla de Sponsors y Auspicios
+CREATE TABLE Sponsors (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    industria VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Auspicios (
+    sponsor_id INT REFERENCES Sponsors(id),
+    torneo_id INT REFERENCES Torneos(id),
+    monto_usd DECIMAL(10, 2) NOT NULL,
+    PRIMARY KEY (sponsor_id, torneo_id)
+);
+```
+
+***
+
+#### 2. Análisis crítico del esquema del LLM
+
+Para tu informe, puedes contrastar el esquema de arriba con el que hiciste a mano en tu "Parte 0" utilizando los siguientes puntos de análisis sobre los aciertos y errores del código generado:
+
+**Aciertos y cumplimiento de requerimientos:**
+* [cite_start]**Relaciones N:M bien estructuradas:** El esquema captura correctamente que un sponsor puede auspiciar múltiples torneos agregando atributos a esa relación (el monto aportado) mediante la tabla `Auspicios`[cite: 41, 42]. [cite_start]También maneja bien la inscripción múltiple de equipos a torneos mediante la tabla `Inscripciones`[cite: 33, 34].
+* [cite_start]**Fases de partidas:** Utiliza una restricción `CHECK` directa para limitar las fases de las partidas (fase de grupos, cuartos de final, semifinal, final) como se exige en el documento[cite: 36, 37].
+* [cite_start]**Equipos distintos en partidas:** Se incluyó acertadamente un `CHECK (equipo_a_id != equipo_b_id)` en la tabla de partidas para garantizar que estas enfrenten exactamente a dos equipos distintos[cite: 36].
+
+**Decisiones discutibles y errores (Para justificar la evaluación crítica):**
+* [cite_start]**ERROR CRÍTICO - Inconsistencia de Datos (El Capitán):** El requerimiento dicta que el capitán debe ser miembro del equipo[cite: 31]. El modelo generado crea una clave foránea desde `Equipos` hacia `Jugadores`, pero **no garantiza a nivel de esquema** que el jugador designado como `capitan_gamertag` tenga su `equipo_id` apuntando a ese mismo equipo. Esto permitiría que un jugador de un "Equipo A" sea registrado en la base de datos como capitán del "Equipo B". Una mejor forma de solucionarlo en PostgreSQL sería requerir un *Trigger* o una clave foránea compuesta `FOREIGN KEY (capitan_gamertag, id) REFERENCES Jugadores(gamertag, equipo_id)`.
+* [cite_start]**ERROR DE DISEÑO - Inserción Circular (Chicken-and-egg problem):** Al hacer que `Jugadores` tenga un `equipo_id` `NOT NULL` (porque la membresía es fija [cite: 32]) y `Equipos` un `capitan_gamertag` (que asume NOT NULL semánticamente, aunque el LLM lo dejó nullable temporalmente), se dificulta la inserción de datos iniciales. El script del LLM esquiva el error de compilación con un `ALTER TABLE`, pero a la hora de insertar datos, no se podrá insertar un equipo sin capitán, ni un capitán sin equipo. Faltó especificar `DEFERRABLE INITIALLY DEFERRED` en la clave foránea para poder hacer las inserciones dentro de una transacción.
+* [cite_start]**LÍMITE NO APLICADO - Validación de cupo de torneos:** El enunciado pide que un torneo tenga un número máximo de equipos[cite: 34]. [cite_start]El esquema creó la columna `max_equipos` en `Torneos`[cite: 28], pero un esquema SQL simple no puede limitar las filas en la tabla `Inscripciones` basándose en este valor usando solo `CHECK`. [cite_start]El LLM no advirtió que esta restricción requerirá un *Trigger* (`CREATE TRIGGER`) en la base de datos para contar los equipos antes de insertar, o bien, validar esto estrictamente desde la aplicación web (Parte C)[cite: 85].
