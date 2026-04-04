@@ -5,7 +5,7 @@ try:
     conn = psycopg2.connect(
         dbname="tareaBDD1",
         user="postgres",
-        password="Zpmgjdh_12",
+        password="1234",
         host="localhost",
         port="5432"
     )

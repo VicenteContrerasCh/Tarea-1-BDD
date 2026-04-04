@@ -27,11 +27,77 @@ INSERT INTO Jugadores (gamertag, nombre_real, email, fecha_nacimiento, pais_orig
 ('Neutrino', 'Javier Mora', 'javier@mail.com', '2003-02-28', 'Uruguay', 2),
 ('Gluon', 'Kevin Rivas', 'kevin@mail.com', '1999-05-05', 'Chile', 2);
 -- (Continuar agregando 5 jugadores por cada equipo del 3 al 10)
+-- Inserción de jugadores para los equipos 3 al 10
+INSERT INTO Jugadores (gamertag, nombre_real, email, fecha_nacimiento, pais_origen, equipo_id) VALUES
+-- Equipo 3: Neon Dragons
+('NeonKing', 'Luis Rojas', 'luis.r@mail.com', '2000-03-12', 'Chile', 3),
+('FireBreath', 'Matias Silva', 'matias.s@mail.com', '2001-07-24', 'Argentina', 3),
+('ScaleMail', 'Nicolas Gomez', 'nico.g@mail.com', '1999-11-05', 'Peru', 3),
+('ClawStriker', 'Oscar Peña', 'oscar.p@mail.com', '2002-02-18', 'Colombia', 3),
+('TailWhip', 'Pablo Herrera', 'pablo.h@mail.com', '2003-09-30', 'Mexico', 3),
 
--- 3. Asignar Capitanes a los Equipos
+-- Equipo 4: Void Walkers
+('VoidLord', 'Rodrigo Castro', 'rodrigo.c@mail.com', '2001-04-15', 'Chile', 4),
+('DarkMatter', 'Simon Vargas', 'simon.v@mail.com', '2002-08-22', 'España', 4),
+('AbyssDiver', 'Tomas Muñoz', 'tomas.m@mail.com', '2000-12-10', 'Uruguay', 4),
+('NullSpace', 'Victor Rios', 'victor.r@mail.com', '1998-05-08', 'Chile', 4),
+('ZeroGravity', 'Waldo Tapia', 'waldo.t@mail.com', '1999-10-14', 'Argentina', 4),
+
+-- Equipo 5: Apex Predators
+('ApexAlpha', 'Alonso Flores', 'alonso.f@mail.com', '2000-01-20', 'Peru', 5),
+('TigerFang', 'Bastian Cardenas', 'bastian.c@mail.com', '2001-06-11', 'Chile', 5),
+('EagleEye', 'Cristian Pavez', 'cristian.p@mail.com', '2002-09-05', 'Mexico', 5),
+('WolfPack', 'Daniel Ortiz', 'daniel.o@mail.com', '2003-03-17', 'Colombia', 5),
+('BearClaw', 'Elias Nunez', 'elias.n@mail.com', '1999-11-28', 'España', 5),
+
+-- Equipo 6: Titanium E-sports
+('IronShield', 'Fernando Lagos', 'fernando.l@mail.com', '2001-02-14', 'Chile', 6),
+('SteelBlade', 'Gonzalo Vera', 'gonzalo.v@mail.com', '2000-08-09', 'Argentina', 6),
+('AlloyForge', 'Hector Salas', 'hector.s@mail.com', '2002-12-01', 'Uruguay', 6),
+('MetalGear', 'Ivan Miranda', 'ivan.m@mail.com', '1998-04-25', 'Peru', 6),
+('ChromePlate', 'Jorge Fuentes', 'jorge.f@mail.com', '1999-07-13', 'Mexico', 6),
+
+-- Equipo 7: Lunar Wolves
+('MoonHowl', 'Lucas Carrasco', 'lucas.c@mail.com', '2000-05-30', 'Chile', 7),
+('StarGazer', 'Martin Navarro', 'martin.n@mail.com', '2001-10-21', 'Colombia', 7),
+('OrbitPath', 'Nestor Pino', 'nestor.p@mail.com', '2002-01-08', 'España', 7),
+('CraterDust', 'Orlando Leiva', 'orlando.l@mail.com', '2003-06-15', 'Argentina', 7),
+('EclipseShadow', 'Patricio Reyes', 'patricio.r@mail.com', '1999-09-02', 'Chile', 7),
+
+-- Equipo 8: Solar Flares
+('SunBurst', 'Quinten Osorio', 'quinten.o@mail.com', '2001-03-22', 'Uruguay', 8),
+('FlareGun', 'Renato Bravo', 'renato.b@mail.com', '2000-11-18', 'Peru', 8),
+('HeatWave', 'Sergio Medina', 'sergio.m@mail.com', '2002-04-05', 'Mexico', 8),
+('PlasmaStorm', 'Tomas Vidal', 'tomas.v@mail.com', '1998-08-27', 'Chile', 8),
+('CoronaRing', 'Ulises Guzman', 'ulises.g@mail.com', '1999-12-19', 'Colombia', 8),
+
+-- Equipo 9: Pixel Vanguard
+('PixelHero', 'Vicente Araya', 'vicente.a@mail.com', '2000-06-14', 'Chile', 9),
+('VoxelKnight', 'William Riquelme', 'william.r@mail.com', '2001-09-08', 'Argentina', 9),
+('BitStream', 'Xavier Bustos', 'xavier.b@mail.com', '2002-02-25', 'España', 9),
+('ByteForce', 'Yerko Valdes', 'yerko.v@mail.com', '2003-05-11', 'Uruguay', 9),
+('GlitchArt', 'Zahir Godoy', 'zahir.g@mail.com', '1999-10-04', 'Peru', 9),
+
+-- Equipo 10: Glitch Syndicate
+('GlitchMaster', 'Alan Martinez', 'alan.m@mail.com', '2001-01-29', 'Mexico', 10),
+('BugHunter', 'Boris Aguilar', 'boris.a@mail.com', '2000-07-06', 'Chile', 10),
+('ErrorCode', 'Carlos donoso', 'carlos.d@mail.com', '2002-11-15', 'Colombia', 10),
+('CrashOverride', 'David Fernandez', 'david.f@mail.com', '1998-03-20', 'Argentina', 10),
+('NullPointer', 'Eduardo Lopez', 'eduardo.l@mail.com', '1999-08-03', 'España', 10);
+
+-- Asignación de capitanes para los equipos 3 al 10
 UPDATE Equipos SET capitan_gamertag = 'NinjaLeader' WHERE id = 1;
 UPDATE Equipos SET capitan_gamertag = 'QuantumBoss' WHERE id = 2;
 -- (Continuar actualizando los capitanes de los demás equipos)
+UPDATE Equipos SET capitan_gamertag = 'NeonKing' WHERE id = 3;
+UPDATE Equipos SET capitan_gamertag = 'VoidLord' WHERE id = 4;
+UPDATE Equipos SET capitan_gamertag = 'ApexAlpha' WHERE id = 5;
+UPDATE Equipos SET capitan_gamertag = 'IronShield' WHERE id = 6;
+UPDATE Equipos SET capitan_gamertag = 'MoonHowl' WHERE id = 7;
+UPDATE Equipos SET capitan_gamertag = 'SunBurst' WHERE id = 8;
+UPDATE Equipos SET capitan_gamertag = 'PixelHero' WHERE id = 9;
+UPDATE Equipos SET capitan_gamertag = 'GlitchMaster' WHERE id = 10;
+
 
 -- 4. Poblar Torneos (3 torneos, al menos uno con cupo de 8) [cite: 60]
 INSERT INTO Torneos (id, nombre, titulo_videojuego, fecha_inicio, fecha_fin, prize_pool_usd, max_equipos) VALUES
