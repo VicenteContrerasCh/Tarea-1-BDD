@@ -6,4 +6,4 @@ DROP TABLE partidas CASCADE;
 DROP TABLE estadisticas_individuales CASCADE;
 DROP TABLE sponsors CASCADE;
 DROP TABLE auspicios CASCADE;
-#asdasd
+--asdasd
