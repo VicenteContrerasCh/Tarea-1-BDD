@@ -1,0 +1,16 @@
+{
+    "sqltools.connections": [
+        {
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Localhost_DB",
+            "group": "localhost",
+            "database": "Tarea_1_BDD",
+            "username": "postgres",
+            "password": "glade90."
+        }
+    ]
+}
