@@ -27,7 +27,7 @@ INSERT INTO Jugadores (gamertag, nombre_real, email, fecha_nacimiento, pais_orig
 ('Neutrino', 'Javier Mora', 'javier@mail.com', '2003-02-28', 'Uruguay', 2),
 ('Gluon', 'Kevin Rivas', 'kevin@mail.com', '1999-05-05', 'Chile', 2);
 -- (Continuar agregando 5 jugadores por cada equipo del 3 al 10)
--- Inserción de jugadores para los equipos 3 al 10
+-- Insercion de jugadores para los equipos 3 al 10
 INSERT INTO Jugadores (gamertag, nombre_real, email, fecha_nacimiento, pais_origen, equipo_id) VALUES
 -- Equipo 3: Neon Dragons
 ('NeonKing', 'Luis Rojas', 'luis.r@mail.com', '2000-03-12', 'Chile', 3),
@@ -85,7 +85,7 @@ INSERT INTO Jugadores (gamertag, nombre_real, email, fecha_nacimiento, pais_orig
 ('CrashOverride', 'David Fernandez', 'david.f@mail.com', '1998-03-20', 'Argentina', 10),
 ('NullPointer', 'Eduardo Lopez', 'eduardo.l@mail.com', '1999-08-03', 'España', 10);
 
--- Asignación de capitanes para los equipos 3 al 10
+-- Asignacion de capitanes para los equipos 3 al 10
 UPDATE Equipos SET capitan_gamertag = 'NinjaLeader' WHERE id = 1;
 UPDATE Equipos SET capitan_gamertag = 'QuantumBoss' WHERE id = 2;
 -- (Continuar actualizando los capitanes de los demás equipos)
@@ -117,8 +117,8 @@ INSERT INTO Inscripciones (torneo_id, equipo_id) VALUES
 (3,1),(3,2),(3,5),(3,6),(3,7),(3,8),(3,9),(3,10);
 
 -- CASO DE PRUEBA: El Torneo 1 ya tiene 8 equipos. 
--- La inscripción del equipo 9 a continuación debe servir para probar la validación en la Parte C de la tarea web[cite: 66, 85].
--- Si se ejecuta directamente en PostgreSQL sin triggers, esta línea funcionará, pero la validación web debe rechazarla.
+-- La inscripcion del equipo 9 a continuacion debe servir para probar la validacion en la Parte C de la tarea web[cite: 66, 85].
+-- Si se ejecuta directamente en PostgreSQL sin triggers, esta línea funcionará, pero la validacion web debe rechazarla.
 -- INSERT INTO Inscripciones (torneo_id, equipo_id) VALUES (1, 9); 
 
 -- 6. Poblar Sponsors y Auspicios (Al menos 5 sponsors) [cite: 63]
@@ -133,7 +133,7 @@ INSERT INTO Auspicios (sponsor_id, torneo_id, monto_usd) VALUES
 (1, 1, 15000.00), (2, 1, 5000.00), (3, 1, 2000.00),
 (4, 2, 20000.00), (5, 2, 8000.00), (1, 3, 5000.00);
 
--- 7. Poblar Partidas (Simulación de Fase de Grupos Round-Robin) [cite: 38, 62]
+-- 7. Poblar Partidas (Simulacion de Fase de Grupos Round-Robin) [cite: 38, 62]
 -- Asumiendo Grupo A: Equipos 1, 2, 3, 4
 INSERT INTO Partidas
 (id, torneo_id, equipo_a_id, equipo_b_id, fecha_hora, puntaje_a, puntaje_b, fase)
