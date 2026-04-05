@@ -102,12 +102,19 @@ UPDATE Equipos SET capitan_gamertag = 'GlitchMaster' WHERE id = 10;
 -- 4. Poblar Torneos (3 torneos, al menos uno con cupo de 8) [cite: 60]
 INSERT INTO Torneos (id, nombre, titulo_videojuego, fecha_inicio, fecha_fin, prize_pool_usd, max_equipos) VALUES
 (1, 'Copa Galáctica 2026', 'Valorant', '2026-06-01', '2026-06-15', 50000.00, 8),
-(2, 'Liga de Leyendas Sur', 'League of Legends', '2026-07-01', '2026-07-20', 75000.00, 16),
-(3, 'Torneo Relámpago', 'Rocket League', '2026-08-01', '2026-08-05', 10000.00, 4);
+(2, 'Liga de Leyendas Sur', 'League of Legends', '2026-07-01', '2026-07-20', 75000.00, 8),
+(3, 'Torneo Relámpago', 'Rocket League', '2026-08-01', '2026-08-05', 10000.00, 8);
 
 -- 5. Poblar Inscripciones (Inscribiendo 8 equipos en el Torneo 1 para llenarlo) [cite: 60]
 INSERT INTO Inscripciones (torneo_id, equipo_id) VALUES
-(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8);
+-- Torneo 1: equipos 1 al 8
+(1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),
+
+-- Torneo 2: equipos 3 al 10
+(2,3),(2,4),(2,5),(2,6),(2,7),(2,8),(2,9),(2,10),
+
+-- Torneo 3: mezcla de 8 equipos
+(3,1),(3,2),(3,5),(3,6),(3,7),(3,8),(3,9),(3,10);
 
 -- CASO DE PRUEBA: El Torneo 1 ya tiene 8 equipos. 
 -- La inscripción del equipo 9 a continuación debe servir para probar la validación en la Parte C de la tarea web[cite: 66, 85].
@@ -128,18 +135,79 @@ INSERT INTO Auspicios (sponsor_id, torneo_id, monto_usd) VALUES
 
 -- 7. Poblar Partidas (Simulación de Fase de Grupos Round-Robin) [cite: 38, 62]
 -- Asumiendo Grupo A: Equipos 1, 2, 3, 4
-INSERT INTO Partidas (id, torneo_id, equipo_a_id, equipo_b_id, fecha_hora, puntaje_a, puntaje_b, fase) VALUES
-(1, 1, 1, 2, '2026-06-01 18:00:00', 13, 10, 'fase de grupos'),
-(2, 1, 3, 4, '2026-06-01 20:00:00', 5, 13, 'fase de grupos'),
-(3, 1, 1, 3, '2026-06-02 18:00:00', 13, 11, 'fase de grupos'),
-(4, 1, 2, 4, '2026-06-02 20:00:00', 8, 13, 'fase de grupos');
--- (Se deben agregar las partidas faltantes para completar el round-robin y las fases eliminatorias hasta la final) [cite: 62]
+INSERT INTO Partidas
+(id, torneo_id, equipo_a_id, equipo_b_id, fecha_hora, puntaje_a, puntaje_b, fase)
+VALUES
+-- FASE DE GRUPOS - Grupo A
+(1,  1, 1, 2, '2026-06-01 18:00:00', 13, 10, 'fase de grupos'),
+(2,  1, 3, 4, '2026-06-01 20:00:00',  5, 13, 'fase de grupos'),
+(3,  1, 1, 3, '2026-06-02 18:00:00', 13, 11, 'fase de grupos'),
+(4,  1, 2, 4, '2026-06-02 20:00:00',  8, 13, 'fase de grupos'),
+(5,  1, 1, 4, '2026-06-03 18:00:00', 11, 13, 'fase de grupos'),
+(6,  1, 2, 3, '2026-06-03 20:00:00', 13,  9, 'fase de grupos'),
+
+-- FASE DE GRUPOS - Grupo B
+(7,  1, 5, 6, '2026-06-04 18:00:00', 10, 13, 'fase de grupos'),
+(8,  1, 7, 8, '2026-06-04 20:00:00', 13,  6, 'fase de grupos'),
+(9,  1, 5, 7, '2026-06-05 18:00:00', 11, 13, 'fase de grupos'),
+(10, 1, 6, 8, '2026-06-05 20:00:00', 13,  4, 'fase de grupos'),
+(11, 1, 5, 8, '2026-06-06 18:00:00', 13,  7, 'fase de grupos'),
+(12, 1, 6, 7, '2026-06-06 20:00:00',  9, 13, 'fase de grupos'),
+
+-- SEMIFINALES
+-- Clasificados supuestos:
+-- Grupo A: 4°, 1°
+-- Grupo B: 7°, 6°
+(13, 1, 4, 7, '2026-06-10 19:00:00', 11, 13, 'semifinal'),
+(14, 1, 1, 6, '2026-06-10 21:00:00', 13,  8, 'semifinal'),
+
+-- FINAL
+(15, 1, 1, 7, '2026-06-15 20:00:00', 13, 11, 'final');
 
 -- 8. Poblar Estadísticas Individuales para las partidas [cite: 64]
 -- Estadísticas de la Partida 1 (Equipo 1 vs Equipo 2)
-INSERT INTO Estadisticas_Individuales (partida_id, jugador_gamertag, kos, restarts, assists) VALUES
-(1, 'NinjaLeader', 15, 5, 8),
-(1, 'ShadowStrike', 10, 8, 12),
-(1, 'QuantumBoss', 12, 10, 4),
-(1, 'Quark', 8, 12, 5);
+WITH jugadores_partida AS (
+    SELECT
+        p.id AS partida_id,
+        p.equipo_a_id,
+        p.equipo_b_id,
+        p.puntaje_a,
+        p.puntaje_b,
+        j.gamertag,
+        j.equipo_id,
+        ROW_NUMBER() OVER (
+            PARTITION BY p.id, j.equipo_id
+            ORDER BY j.gamertag
+        ) AS rn
+    FROM Partidas p
+    JOIN Jugadores j
+      ON j.equipo_id IN (p.equipo_a_id, p.equipo_b_id)
+    WHERE p.torneo_id = 1
+)
+INSERT INTO Estadisticas_Individuales
+(partida_id, jugador_gamertag, kos, restarts, assists)
+SELECT
+    partida_id,
+    gamertag,
+    CASE
+        WHEN (equipo_id = equipo_a_id AND puntaje_a > puntaje_b)
+          OR (equipo_id = equipo_b_id AND puntaje_b > puntaje_a)
+            THEN 18 - rn
+        ELSE 12 - rn
+    END AS kos,
+    CASE
+        WHEN (equipo_id = equipo_a_id AND puntaje_a > puntaje_b)
+          OR (equipo_id = equipo_b_id AND puntaje_b > puntaje_a)
+            THEN 5 + rn
+        ELSE 9 + rn
+    END AS restarts,
+    CASE
+        WHEN (equipo_id = equipo_a_id AND puntaje_a > puntaje_b)
+          OR (equipo_id = equipo_b_id AND puntaje_b > puntaje_a)
+            THEN 4 + rn
+        ELSE 3 + rn
+    END AS assists
+FROM jugadores_partida
+ORDER BY partida_id, equipo_id, rn;
+
 -- (Se deben agregar las estadísticas para todos los jugadores participantes en cada partida creada) [cite: 64]
