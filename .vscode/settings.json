@@ -8,9 +8,9 @@
             "driver": "PostgreSQL",
             "name": "Localhost_DB",
             "group": "localhost",
-            "database": "Tarea_1_BDD",
+            "database": "TareaBDD1",
             "username": "postgres",
-            "password": "glade90."
+            "password": "Sofiagonzalez2003"
         }
     ]
 }

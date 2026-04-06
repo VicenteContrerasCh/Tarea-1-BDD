@@ -17,9 +17,23 @@ CREATE TABLE Jugadores (
 );
 
 -- Agregar la clave foránea del capitán a la tabla Equipos
+-- ALTER TABLE Equipos
+-- ADD CONSTRAINT fk_capitan
+-- FOREIGN KEY (capitan_gamertag) REFERENCES Jugadores(gamertag);
+
+-- Crea la restricción de que no se repite una combinación de gamertag y equipo_id en Jugadores
+-- para poder referenciarlo como Foreign Key sin problemas.
+ALTER TABLE Jugadores
+ADD CONSTRAINT uq_jugador_equipo UNIQUE (gamertag, equipo_id);
+
+-- Ahora creamos la foreign key desde Equipos sin generar problemas, ya que ahora
+-- apunta a un conjunto de atributos de Jugadores que es único. Asegurando que el capitán pertenece
+-- al mismo equipo.
 ALTER TABLE Equipos
-ADD CONSTRAINT fk_capitan
-FOREIGN KEY (capitan_gamertag) REFERENCES Jugadores(gamertag);
+ADD CONSTRAINT fk_capitan_del_mismo_equipo
+FOREIGN KEY (capitan_gamertag, id)
+REFERENCES Jugadores(gamertag, equipo_id);
+
 
 -- 3. Tabla de Torneos
 CREATE TABLE Torneos (
