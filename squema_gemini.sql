@@ -34,7 +34,6 @@ ADD CONSTRAINT fk_capitan_del_mismo_equipo
 FOREIGN KEY (capitan_gamertag, id)
 REFERENCES Jugadores(gamertag, equipo_id);
 
-
 -- 3. Tabla de Torneos
 CREATE TABLE Torneos (
     id SERIAL PRIMARY KEY,
@@ -65,6 +64,19 @@ CREATE TABLE Partidas (
     fase VARCHAR(50) CHECK (fase IN ('fase de grupos', 'cuartos de final', 'semifinal', 'final')) NOT NULL,
     CHECK (equipo_a_id != equipo_b_id)
 );
+-- El problema que se nos presenta en Partidas es que no tenemos como asegurar que los equipos
+-- que se enfrentan en la partida estén inscritos en el mismo torneo. Lo solucionamos con las 
+-- siguientes restricciones:
+
+ALTER TABLE Partidas -- Aseguramos que el equipo "a" esté inscrito.
+ADD CONSTRAINT fk_partida_equipo_a_inscrito
+FOREIGN KEY (torneo_id, equipo_a_id)
+REFERENCES Inscripciones(torneo_id, equipo_id);
+
+ALTER TABLE Partidas -- Aseguramos que el equipo "b" esté inscrito.
+ADD CONSTRAINT fk_partida_equipo_b_inscrito
+FOREIGN KEY (torneo_id, equipo_b_id)
+REFERENCES Inscripciones(torneo_id, equipo_id);
 
 -- 6. Tabla de Estadísticas Individuales
 CREATE TABLE Estadisticas_Individuales (
@@ -75,6 +87,34 @@ CREATE TABLE Estadisticas_Individuales (
     assists INT DEFAULT 0,
     PRIMARY KEY (partida_id, jugador_gamertag)
 );
+-- El problema que hay aquí es que no se nos asegura que el jugador mencionado haya efectivamente
+-- participado en la partida. Por lo tanto hay que usar tablas Estadisticas_Individuales, Jugadores
+-- y Partidas. Para esto hay que usar un trigger.
+-- Trigger: regla automática que PostgreSQL ejecuta cuando le hacemos algo a una tabla.
+
+CREATE OR REPLACE FUNCTION verificar_jugador_en_partida()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM Partidas p
+        JOIN Jugadores j ON j.gamertag = NEW.jugador_gamertag
+        WHERE p.id = NEW.partida_id
+          AND j.equipo_id IN (p.equipo_a_id, p.equipo_b_id)
+    ) THEN
+        RAISE EXCEPTION 'El jugador % no pertenece a ninguno de los equipos de la partida %',
+            NEW.jugador_gamertag, NEW.partida_id;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Teniendo el trigger listo, debemos unirlo a la tabala.
+CREATE TRIGGER trg_verificar_jugador_en_partida
+BEFORE INSERT OR UPDATE ON Estadisticas_Individuales
+FOR EACH ROW
+EXECUTE FUNCTION verificar_jugador_en_partida();
 
 -- 7. Tabla de Sponsors y Auspicios
 CREATE TABLE Sponsors (
