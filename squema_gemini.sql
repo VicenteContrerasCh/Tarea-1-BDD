@@ -51,6 +51,40 @@ CREATE TABLE Inscripciones (
     equipo_id INT REFERENCES Equipos(id),
     PRIMARY KEY (torneo_id, equipo_id)
 );
+-- El problema que tenemos aquí con Inscripciones es que no considera el máximo de equipos en 
+-- cada torneo. Notamos que no se podría usar por ejemplo un check porque este comando sirve para
+-- verificar atributos de una tupla y no sirve para un conjunto. A continuación agregamos el trigger:
+-- (Esto está bien explicado en el informe)
+CREATE OR REPLACE FUNCTION verificar_cupo_torneo()
+RETURNS TRIGGER AS $$
+DECLARE
+    inscritos_actuales INT;
+    maximo_permitido INT;
+BEGIN
+    SELECT COUNT(*)
+    INTO inscritos_actuales
+    FROM Inscripciones
+    WHERE torneo_id = NEW.torneo_id;
+
+    SELECT max_equipos
+    INTO maximo_permitido
+    FROM Torneos
+    WHERE id = NEW.torneo_id;
+
+    IF inscritos_actuales >= maximo_permitido THEN
+        RAISE EXCEPTION 'No se puede inscribir el equipo: el torneo % ya alcanzó su máximo de equipos',
+            NEW.torneo_id;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Ahora simplemente lo ligamos a la tabla de Inscripciones.
+CREATE TRIGGER trg_verificar_cupo_torneo
+BEFORE INSERT ON Inscripciones
+FOR EACH ROW
+EXECUTE FUNCTION verificar_cupo_torneo();
 
 -- 5. Tabla de Partidas
 CREATE TABLE Partidas (
@@ -78,6 +112,13 @@ ADD CONSTRAINT fk_partida_equipo_b_inscrito
 FOREIGN KEY (torneo_id, equipo_b_id)
 REFERENCES Inscripciones(torneo_id, equipo_id);
 
+-- A continuación hacemos restricciones para asegurar puntajes >= a cero.
+ALTER TABLE Partidas
+ADD CONSTRAINT chk_puntaje_a_no_negativo CHECK (puntaje_a IS NULL OR puntaje_a >= 0);
+
+ALTER TABLE Partidas
+ADD CONSTRAINT chk_puntaje_b_no_negativo CHECK (puntaje_b IS NULL OR puntaje_b >= 0);
+
 -- 6. Tabla de Estadísticas Individuales
 CREATE TABLE Estadisticas_Individuales (
     partida_id INT REFERENCES Partidas(id),
@@ -91,6 +132,7 @@ CREATE TABLE Estadisticas_Individuales (
 -- participado en la partida. Por lo tanto hay que usar tablas Estadisticas_Individuales, Jugadores
 -- y Partidas. Para esto hay que usar un trigger.
 -- Trigger: regla automática que PostgreSQL ejecuta cuando le hacemos algo a una tabla.
+-- (Esto está bien explicado en el informe)
 
 CREATE OR REPLACE FUNCTION verificar_jugador_en_partida()
 RETURNS TRIGGER AS $$
@@ -115,6 +157,16 @@ CREATE TRIGGER trg_verificar_jugador_en_partida
 BEFORE INSERT OR UPDATE ON Estadisticas_Individuales
 FOR EACH ROW
 EXECUTE FUNCTION verificar_jugador_en_partida();
+
+-- A continuación hacemos restricciones para asegurar estadísticas >= a cero.
+ALTER TABLE Estadisticas_Individuales
+ADD CONSTRAINT chk_kos_no_negativos CHECK (kos >= 0);
+
+ALTER TABLE Estadisticas_Individuales
+ADD CONSTRAINT chk_restarts_no_negativos CHECK (restarts >= 0);
+
+ALTER TABLE Estadisticas_Individuales
+ADD CONSTRAINT chk_assists_no_negativos CHECK (assists >= 0);
 
 -- 7. Tabla de Sponsors y Auspicios
 CREATE TABLE Sponsors (
