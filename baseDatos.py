@@ -1,19 +1,19 @@
-#Importa la librería psycopg2 para conectarse a la base de datos PostgreSQL
+# A continuación hago la importación para usar credenciales.
+from dotenv import load_dotenv
+import os
 import psycopg2
+#Importa la librería psycopg2 para conectarse a la base de datos PostgreSQL
+
+load_dotenv()
+
 #Intenta establecer una conexión con la base de datos utilizando las credenciales proporcionadas
 try:
     conn = psycopg2.connect(
-<<<<<<< HEAD
-        dbname="Tarea_1_BDD",
-        user="postgres",
-        password="glade90.",
-=======
-        dbname="TareaBDD1", 
-        user="postgres",
-        password="Zpmgjdh_12",
->>>>>>> a9fe98bc195521a9834b90c73428256077c70548
-        host="localhost",
-        port="5432"
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT")
     )
     print("¡Conexión exitosa a la base de datos!")
 except Exception as e:
