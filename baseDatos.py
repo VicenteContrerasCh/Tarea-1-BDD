@@ -1,5 +1,11 @@
-#Importa la librería psycopg2 para conectarse a la base de datos PostgreSQL
+# A continuación hago la importación para usar credenciales.
+from dotenv import load_dotenv
+import os
 import psycopg2
+#Importa la librería psycopg2 para conectarse a la base de datos PostgreSQL
+
+load_dotenv()
+
 #Intenta establecer una conexión con la base de datos utilizando las credenciales proporcionadas
 try:
     conn = psycopg2.connect(
