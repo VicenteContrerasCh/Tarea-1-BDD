@@ -27,7 +27,6 @@ INSERT INTO Jugadores (gamertag, nombre_real, email, fecha_nacimiento, pais_orig
 ('Neutrino', 'Javier Mora', 'javier@mail.com', '2003-02-28', 'Uruguay', 2),
 ('Gluon', 'Kevin Rivas', 'kevin@mail.com', '1999-05-05', 'Chile', 2);
 -- (Continuar agregando 5 jugadores por cada equipo del 3 al 10)
--- Insercion de jugadores para los equipos 3 al 10
 INSERT INTO Jugadores (gamertag, nombre_real, email, fecha_nacimiento, pais_origen, equipo_id) VALUES
 -- Equipo 3: Neon Dragons
 ('NeonKing', 'Luis Rojas', 'luis.r@mail.com', '2000-03-12', 'Chile', 3),
@@ -165,7 +164,6 @@ VALUES
 (15, 1, 1, 7, '2026-06-15 20:00:00', 13, 11, 'final');
 
 -- 8. Poblar Estadísticas Individuales para las partidas [cite: 64]
--- Estadísticas de la Partida 1 (Equipo 1 vs Equipo 2)
 WITH jugadores_partida AS (
     SELECT
         p.id AS partida_id,

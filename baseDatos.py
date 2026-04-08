@@ -9,11 +9,11 @@ load_dotenv()
 #Intenta establecer una conexión con la base de datos utilizando las credenciales proporcionadas
 try:
     conn = psycopg2.connect(
-        dbname=os.getenv("DB_NAME"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        host=os.getenv("DB_HOST"),
-        port=os.getenv("DB_PORT")
+        dbname="Tarea_1_BDD",
+        user="postgres",
+        password="glade90.",
+        host="localhost",
+        port="5432"
     )
     print("¡Conexión exitosa a la base de datos!")
 except Exception as e:
