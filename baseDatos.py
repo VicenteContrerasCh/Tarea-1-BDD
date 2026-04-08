@@ -3,15 +3,9 @@ import psycopg2
 #Intenta establecer una conexión con la base de datos utilizando las credenciales proporcionadas
 try:
     conn = psycopg2.connect(
-<<<<<<< HEAD
         dbname="Tarea_1_BDD",
         user="postgres",
         password="glade90.",
-=======
-        dbname="TareaBDD1", 
-        user="postgres",
-        password="Zpmgjdh_12",
->>>>>>> a9fe98bc195521a9834b90c73428256077c70548
         host="localhost",
         port="5432"
     )
