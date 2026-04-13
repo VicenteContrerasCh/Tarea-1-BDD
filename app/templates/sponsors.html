@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Sponsors{% endblock %}
+{% block content %}
+<h2>Página de sponsors</h2>
+<form method="get" class="form-inline">
+    <label for="videojuego">Videojuego:</label>
+    <select name="videojuego" id="videojuego">
+        <option value="">Selecciona un videojuego</option>
+        {% for juego in videojuegos %}
+        <option value="{{ juego.titulo_videojuego }}" {% if videojuego == juego.titulo_videojuego %}selected{% endif %}>{{ juego.titulo_videojuego }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Consultar</button>
+</form>
+
+{% if videojuego %}
+<h3>Sponsors que auspiciaron todos los torneos de {{ videojuego }}</h3>
+{% if sponsors_resultado %}
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Industria</th>
+            <th>Monto total aportado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sponsor in sponsors_resultado %}
+        <tr>
+            <td>{{ sponsor.nombre }}</td>
+            <td>{{ sponsor.industria }}</td>
+            <td>USD {{ sponsor.monto_total_aportado }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No hay sponsors que cumplan esa condición para ese videojuego.</p>
+{% endif %}
+{% endif %}
+{% endblock %}

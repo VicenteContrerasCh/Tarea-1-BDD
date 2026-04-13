@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Torneos{% endblock %}
+{% block content %}
+<h2>Página de torneos</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Videojuego</th>
+            <th>Fechas</th>
+            <th>Prize pool</th>
+            <th>Inscritos</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for torneo in torneos %}
+        <tr>
+            <td>{{ torneo.id }}</td>
+            <td>{{ torneo.nombre }}</td>
+            <td>{{ torneo.titulo_videojuego }}</td>
+            <td>{{ torneo.fecha_inicio }} a {{ torneo.fecha_fin }}</td>
+            <td>USD {{ torneo.prize_pool_usd }}</td>
+            <td>{{ torneo.equipos_inscritos }} / {{ torneo.max_equipos }}</td>
+            <td><a href="{{ url_for('detalle_torneo', torneo_id=torneo.id) }}">Ver detalle</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

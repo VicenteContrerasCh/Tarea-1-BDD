@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Estadísticas{% endblock %}
+{% block content %}
+<h2>Página de estadísticas de torneo</h2>
+<form method="get" class="form-inline">
+    <label for="torneo_id">Torneo:</label>
+    <select name="torneo_id" id="torneo_id" onchange="this.form.submit()">
+        <option value="">Selecciona un torneo</option>
+        {% for torneo in torneos %}
+        <option value="{{ torneo.id }}" {% if torneo_id == torneo.id %}selected{% endif %}>{{ torneo.nombre }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="equipo_id">Equipo:</label>
+    <select name="equipo_id" id="equipo_id">
+        <option value="">Selecciona un equipo</option>
+        {% for equipo in equipos_torneo %}
+        <option value="{{ equipo.id }}" {% if equipo_id == equipo.id %}selected{% endif %}>{{ equipo.nombre }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Consultar</button>
+</form>
+
+{% if torneo_id %}
+<h3>Ranking de jugadores por ratio KOs / restarts</h3>
+{% if ranking %}
+<table>
+    <thead>
+        <tr>
+            <th>Gamertag</th>
+            <th>Equipo</th>
+            <th>Partidas</th>
+            <th>KOs</th>
+            <th>Restarts</th>
+            <th>Assists</th>
+            <th>Ratio</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for jugador in ranking %}
+        <tr>
+            <td>{{ jugador.gamertag }}</td>
+            <td>{{ jugador.equipo }}</td>
+            <td>{{ jugador.partidas_jugadas }}</td>
+            <td>{{ jugador.total_kos }}</td>
+            <td>{{ jugador.total_restarts }}</td>
+            <td>{{ jugador.total_assists }}</td>
+            <td>{{ jugador.ratio }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No hay estadísticas suficientes para este torneo.</p>
+{% endif %}
+
+<h3>Evolución por fase del equipo seleccionado</h3>
+{% if evolucion %}
+<table>
+    <thead>
+        <tr>
+            <th>Etapa</th>
+            <th>Promedio KOs</th>
+            <th>Promedio Restarts</th>
+            <th>Promedio Assists</th>
+            <th>Registros</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for fila in evolucion %}
+        <tr>
+            <td>{{ fila.etapa }}</td>
+            <td>{{ fila.promedio_kos }}</td>
+            <td>{{ fila.promedio_restarts }}</td>
+            <td>{{ fila.promedio_assists }}</td>
+            <td>{{ fila.registros }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Selecciona un equipo de ese torneo para ver la comparación entre fase de grupos y eliminatorias.</p>
+{% endif %}
+{% endif %}
+{% endblock %}

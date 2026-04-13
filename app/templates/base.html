@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tarea 1 - Torneo Gaming{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Sistema de Torneos Gaming</h1>
+            <nav>
+                <a href="{{ url_for('inicio') }}">Inicio</a>
+                <a href="{{ url_for('torneos') }}">Torneos</a>
+                <a href="{{ url_for('estadisticas') }}">Estadísticas</a>
+                <a href="{{ url_for('busqueda') }}">Búsqueda</a>
+                <a href="{{ url_for('sponsors') }}">Sponsors</a>
+                <a href="{{ url_for('inscripciones') }}">Inscripciones</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

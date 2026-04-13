@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+<h2>Resumen de torneos</h2>
+<p>Aplicación Flask conectada a PostgreSQL para la Parte C.</p>
+<div class="cards">
+    {% for torneo in torneos %}
+    <div class="card">
+        <h3>{{ torneo.nombre }}</h3>
+        <p><strong>Videojuego:</strong> {{ torneo.titulo_videojuego }}</p>
+        <p><strong>Fechas:</strong> {{ torneo.fecha_inicio }} a {{ torneo.fecha_fin }}</p>
+        <p><strong>Prize pool:</strong> USD {{ torneo.prize_pool_usd }}</p>
+        <p><strong>Inscritos:</strong> {{ torneo.equipos_inscritos }} / {{ torneo.max_equipos }}</p>
+        <a class="button" href="{{ url_for('detalle_torneo', torneo_id=torneo.id) }}">Ver detalle</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
