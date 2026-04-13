@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}Detalle de torneo{% endblock %}
+{% block content %}
+<h2>{{ torneo.nombre }}</h2>
+<p><strong>Videojuego:</strong> {{ torneo.titulo_videojuego }}</p>
+<p><strong>Fechas:</strong> {{ torneo.fecha_inicio }} a {{ torneo.fecha_fin }}</p>
+<p><strong>Prize pool:</strong> USD {{ torneo.prize_pool_usd }}</p>
+<p><strong>Equipos inscritos:</strong> {{ torneo.equipos_inscritos }} / {{ torneo.max_equipos }}</p>
+
+<h3>Tabla de posiciones de fase de grupos</h3>
+{% if tabla_posiciones %}
+<table>
+    <thead>
+        <tr>
+            <th>Equipo</th>
+            <th>PJ</th>
+            <th>G</th>
+            <th>E</th>
+            <th>P</th>
+            <th>Puntos</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for fila in tabla_posiciones %}
+        <tr>
+            <td>{{ fila.nombre }}</td>
+            <td>{{ fila.jugadas }}</td>
+            <td>{{ fila.ganadas }}</td>
+            <td>{{ fila.empatadas }}</td>
+            <td>{{ fila.perdidas }}</td>
+            <td>{{ fila.puntaje_total }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No hay partidas de fase de grupos registradas.</p>
+{% endif %}
+
+<h3>Partidas jugadas</h3>
+{% if partidas %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Fecha y hora</th>
+            <th>Fase</th>
+            <th>Equipo A</th>
+            <th>Equipo B</th>
+            <th>Resultado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for partida in partidas %}
+        <tr>
+            <td>{{ partida.id }}</td>
+            <td>{{ partida.fecha_hora }}</td>
+            <td>{{ partida.fase }}</td>
+            <td>{{ partida.equipo_a }}</td>
+            <td>{{ partida.equipo_b }}</td>
+            <td>{{ partida.puntaje_a }} - {{ partida.puntaje_b }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No hay partidas registradas para este torneo.</p>
+{% endif %}
+
+<div class="grid-two">
+    <section>
+        <h3>Equipos inscritos</h3>
+        {% if equipos %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Equipo</th>
+                    <th>Creación</th>
+                    <th>Capitán</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for equipo in equipos %}
+                <tr>
+                    <td>{{ equipo.nombre }}</td>
+                    <td>{{ equipo.fecha_creacion }}</td>
+                    <td>{{ equipo.capitan_gamertag }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay equipos inscritos.</p>
+        {% endif %}
+    </section>
+
+    <section>
+        <h3>Sponsors del torneo</h3>
+        {% if sponsors %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Industria</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sponsor in sponsors %}
+                <tr>
+                    <td>{{ sponsor.nombre }}</td>
+                    <td>{{ sponsor.industria }}</td>
+                    <td>USD {{ sponsor.monto_usd }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay sponsors registrados.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

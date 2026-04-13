@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Búsqueda{% endblock %}
+{% block content %}
+<h2>Página de búsqueda</h2>
+<form method="get" class="form-inline">
+    <input type="text" name="q" value="{{ q }}" placeholder="Buscar gamertag, país o nombre de equipo">
+    <button type="submit">Buscar</button>
+</form>
+
+{% if q %}
+<h3>Jugadores encontrados</h3>
+{% if jugadores %}
+<table>
+    <thead>
+        <tr>
+            <th>Gamertag</th>
+            <th>Nombre real</th>
+            <th>Email</th>
+            <th>País</th>
+            <th>Equipo</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for jugador in jugadores %}
+        <tr>
+            <td>{{ jugador.gamertag }}</td>
+            <td>{{ jugador.nombre_real }}</td>
+            <td>{{ jugador.email }}</td>
+            <td>{{ jugador.pais_origen }}</td>
+            <td>{{ jugador.equipo }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No se encontraron jugadores.</p>
+{% endif %}
+
+<h3>Equipos encontrados</h3>
+{% if equipos %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Fecha creación</th>
+            <th>Capitán</th>
+            <th>Jugadores</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for equipo in equipos %}
+        <tr>
+            <td>{{ equipo.id }}</td>
+            <td>{{ equipo.nombre }}</td>
+            <td>{{ equipo.fecha_creacion }}</td>
+            <td>{{ equipo.capitan_gamertag }}</td>
+            <td>{{ equipo.cantidad_jugadores }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No se encontraron equipos.</p>
+{% endif %}
+{% endif %}
+{% endblock %}
