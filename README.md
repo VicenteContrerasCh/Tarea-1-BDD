@@ -17,7 +17,7 @@ Este proyecto implementa un sistema backend completo para la gestión de un ecos
 
 ## Tecnologías Utilizadas
 * **Base de Datos:** PostgreSQL
-* **Backend:** Python 3.x, Flask
+* **Backend:** Python 3.12.10, Flask
 * **Librerías Clave:** * `psycopg2` (Adaptador de base de datos para Python)
   * `python-dotenv` (Gestión de variables de entorno)
 
@@ -38,8 +38,10 @@ Sigue estos pasos para desplegar el proyecto en tu entorno local.
 1. Abre tu gestor de PostgreSQL (ej. pgAdmin o VS Code) y crea una base de datos llamada `TareaBDD1`.
 2. Ejecuta los scripts SQL para montar la estructura y poblar los datos:
    # (Asegúrate de estar en el directorio correcto o usa la interfaz de tu editor)
+   ```bash
    psql -U postgres -d TareaBDD1 -f esquema.sql
    psql -U postgres -d TareaBDD1 -f data.sql
+   ```
 ## Levantamiento de la Aplicación
 
 Tras descomprimir el archivo, abrir una terminal en la raíz del proyecto y ejecutar los siguientes comandos para levantar el sistema:
