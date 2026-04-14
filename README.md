@@ -1,11 +1,11 @@
 # Tarea 1 BDD - Sistema de Gestión de Esports
 
-## 👥 Integrantes
+## Integrantes
 * **Nombre:** Benjamín Gaspar Ulloa Castro | **Número de Alumno:** 23642459
 * **Nombre:** Benjamín Andrés González Recart | **Número de Alumno:** 22638059
 * **Nombre:** Vicente Ignacio Contreras Chávez | **Número de Alumno:** 22640991
 
-## 🚀 Levantamiento de la Aplicación
+## Levantamiento de la Aplicación
 Tras descomprimir el archivo, abrir una terminal en la carpeta raíz del proyecto y ejecutar los siguientes 5 comandos para levantar el sistema:
 
 1. Crear el entorno virtual:
@@ -30,7 +30,7 @@ El esquema relacional consta de las siguientes entidades principales:
 * `auspicios`: Patrocinios y financiamiento por equipo.
 * `estadisticas_individuales`: Rendimiento histórico por jugador.
 
-## 🚀 Instrucciones de Instalación y Ejecución
+## Instrucciones de Instalación y Ejecución
 
 Sigue estos pasos para desplegar el proyecto en tu entorno local.
 
@@ -41,7 +41,7 @@ Sigue estos pasos para desplegar el proyecto en tu entorno local.
    # (Asegúrate de estar en el directorio correcto o usa la interfaz de tu editor)
    psql -U postgres -d TareaBDD1 -f esquema.sql
    psql -U postgres -d TareaBDD1 -f data.sql
-## 📁 Estructura de Archivos y Directorios
+## Estructura de Archivos y Directorios
 
 El proyecto está organizado de la siguiente manera para separar la lógica del servidor, la interfaz de usuario y los scripts de base de datos:
 
