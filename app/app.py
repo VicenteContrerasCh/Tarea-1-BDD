@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from psycopg2.extras import RealDictCursor
-from baseDatos import get_connection
+from conexion import get_connection
 
 app = Flask(__name__)
 app.secret_key = "tarea1-secreto"
