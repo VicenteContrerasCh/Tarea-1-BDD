@@ -226,24 +226,29 @@ def estadisticas():
             evolucion = fetch_all(
                 """
                 SELECT CASE
-                           WHEN p.fase = 'fase de grupos' THEN 'Fase de grupos'
-                           WHEN p.fase IN ('semifinal', 'final', 'cuartos de final') THEN 'Eliminatorias'
-                       END AS etapa,
-                       ROUND(AVG(ei.kos)::numeric, 2) AS promedio_kos,
-                       ROUND(AVG(ei.restarts)::numeric, 2) AS promedio_restarts,
-                       ROUND(AVG(ei.assists)::numeric, 2) AS promedio_assists,
-                       COUNT(*) AS registros
+                        WHEN p.fase = 'fase de grupos' THEN 'Fase de grupos'
+                        WHEN p.fase IN ('semifinal', 'final', 'cuartos de final') THEN 'Eliminatorias'
+                    END AS etapa,
+                    ROUND(AVG(ei.kos)::numeric, 2) AS promedio_kos,
+                    ROUND(AVG(ei.restarts)::numeric, 2) AS promedio_restarts,
+                    ROUND(AVG(ei.assists)::numeric, 2) AS promedio_assists,
+                    COUNT(*) AS registros
                 FROM Estadisticas_Individuales ei
                 JOIN Partidas p ON p.id = ei.partida_id
                 JOIN Jugadores j ON j.gamertag = ei.jugador_gamertag
                 WHERE p.torneo_id = %s
-                  AND j.equipo_id = %s
-                  AND p.fase IN ('fase de grupos', 'semifinal', 'final', 'cuartos de final')
-                GROUP BY etapa
-                ORDER BY CASE
-                           WHEN etapa = 'Fase de grupos' THEN 1
-                           ELSE 2
-                         END;
+                AND j.equipo_id = %s
+                AND p.fase IN ('fase de grupos', 'semifinal', 'final', 'cuartos de final')
+                GROUP BY CASE
+                        WHEN p.fase = 'fase de grupos' THEN 'Fase de grupos'
+                        WHEN p.fase IN ('semifinal', 'final', 'cuartos de final') THEN 'Eliminatorias'
+                        END
+                ORDER BY MIN(
+                    CASE
+                        WHEN p.fase = 'fase de grupos' THEN 1
+                        ELSE 2
+                    END
+                );
                 """,
                 (torneo_id, equipo_id),
             )
