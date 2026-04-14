@@ -208,4 +208,157 @@ SELECT
 FROM jugadores_partida
 ORDER BY partida_id, equipo_id, rn;
 
+-- 9. Poblar Partidas para el Torneo 2
+-- Asumiendo Grupo A: Equipos 3, 4, 5, 6
+-- Asumiendo Grupo B: Equipos 7, 8, 9, 10
+INSERT INTO Partidas
+(id, torneo_id, equipo_a_id, equipo_b_id, fecha_hora, puntaje_a, puntaje_b, fase)
+VALUES
+-- FASE DE GRUPOS - Grupo A
+(16, 2, 3, 4, '2026-07-01 18:00:00', 13, 9,  'fase de grupos'),
+(17, 2, 5, 6, '2026-07-01 20:00:00', 10, 13, 'fase de grupos'),
+(18, 2, 3, 5, '2026-07-02 18:00:00', 13, 11, 'fase de grupos'),
+(19, 2, 4, 6, '2026-07-02 20:00:00', 8,  13, 'fase de grupos'),
+(20, 2, 3, 6, '2026-07-03 18:00:00', 11, 13, 'fase de grupos'),
+(21, 2, 4, 5, '2026-07-03 20:00:00', 13, 10, 'fase de grupos'),
+
+-- FASE DE GRUPOS - Grupo B
+(22, 2, 7, 8,  '2026-07-04 18:00:00', 13, 7,  'fase de grupos'),
+(23, 2, 9, 10, '2026-07-04 20:00:00', 13, 11, 'fase de grupos'),
+(24, 2, 7, 9,  '2026-07-05 18:00:00', 10, 13, 'fase de grupos'),
+(25, 2, 8, 10, '2026-07-05 20:00:00', 13, 8,  'fase de grupos'),
+(26, 2, 7, 10, '2026-07-06 18:00:00', 13, 9,  'fase de grupos'),
+(27, 2, 8, 9,  '2026-07-06 20:00:00', 7,  13, 'fase de grupos'),
+
+-- SEMIFINALES
+-- Clasificados supuestos:
+-- Grupo A: 6°, 3°
+-- Grupo B: 9°, 7°
+(28, 2, 6, 7, '2026-07-10 19:00:00', 13, 10, 'semifinal'),
+(29, 2, 3, 9, '2026-07-10 21:00:00', 11, 13, 'semifinal'),
+
+-- FINAL
+(30, 2, 6, 9, '2026-07-15 20:00:00', 13, 11, 'final');
+
+-- 10. Poblar Estadísticas Individuales para las partidas del Torneo 2
+WITH jugadores_partida AS (
+    SELECT
+        p.id AS partida_id,
+        p.equipo_a_id,
+        p.equipo_b_id,
+        p.puntaje_a,
+        p.puntaje_b,
+        j.gamertag,
+        j.equipo_id,
+        ROW_NUMBER() OVER (
+            PARTITION BY p.id, j.equipo_id
+            ORDER BY j.gamertag
+        ) AS rn
+    FROM Partidas p
+    JOIN Jugadores j
+      ON j.equipo_id IN (p.equipo_a_id, p.equipo_b_id)
+    WHERE p.torneo_id = 2
+)
+INSERT INTO Estadisticas_Individuales
+(partida_id, jugador_gamertag, kos, restarts, assists)
+SELECT
+    partida_id,
+    gamertag,
+    CASE
+        WHEN (equipo_id = equipo_a_id AND puntaje_a > puntaje_b)
+          OR (equipo_id = equipo_b_id AND puntaje_b > puntaje_a)
+            THEN 18 - rn
+        ELSE 12 - rn
+    END AS kos,
+    CASE
+        WHEN (equipo_id = equipo_a_id AND puntaje_a > puntaje_b)
+          OR (equipo_id = equipo_b_id AND puntaje_b > puntaje_a)
+            THEN 5 + rn
+        ELSE 9 + rn
+    END AS restarts,
+    CASE
+        WHEN (equipo_id = equipo_a_id AND puntaje_a > puntaje_b)
+          OR (equipo_id = equipo_b_id AND puntaje_b > puntaje_a)
+            THEN 4 + rn
+        ELSE 3 + rn
+    END AS assists
+FROM jugadores_partida
+ORDER BY partida_id, equipo_id, rn;
+
+-- 11. Poblar Partidas para el Torneo 3
+-- Asumiendo Grupo A: Equipos 1, 2, 5, 6
+-- Asumiendo Grupo B: Equipos 7, 8, 9, 10
+INSERT INTO Partidas
+(id, torneo_id, equipo_a_id, equipo_b_id, fecha_hora, puntaje_a, puntaje_b, fase)
+VALUES
+-- FASE DE GRUPOS - Grupo A
+(31, 3, 1, 2, '2026-08-01 10:00:00', 13, 8,  'fase de grupos'),
+(32, 3, 5, 6, '2026-08-01 12:00:00', 9,  13, 'fase de grupos'),
+(33, 3, 1, 5, '2026-08-01 14:00:00', 13, 11, 'fase de grupos'),
+(34, 3, 2, 6, '2026-08-01 16:00:00', 10, 13, 'fase de grupos'),
+(35, 3, 1, 6, '2026-08-02 10:00:00', 11, 13, 'fase de grupos'),
+(36, 3, 2, 5, '2026-08-02 12:00:00', 13, 9,  'fase de grupos'),
+
+-- FASE DE GRUPOS - Grupo B
+(37, 3, 7, 8,  '2026-08-02 14:00:00', 13, 6,  'fase de grupos'),
+(38, 3, 9, 10, '2026-08-02 16:00:00', 12, 13, 'fase de grupos'),
+(39, 3, 7, 9,  '2026-08-03 10:00:00', 13, 10, 'fase de grupos'),
+(40, 3, 8, 10, '2026-08-03 12:00:00', 7,  13, 'fase de grupos'),
+(41, 3, 7, 10, '2026-08-03 14:00:00', 11, 13, 'fase de grupos'),
+(42, 3, 8, 9,  '2026-08-03 16:00:00', 13, 9,  'fase de grupos'),
+
+-- SEMIFINALES
+-- Clasificados supuestos:
+-- Grupo A: 6°, 1°
+-- Grupo B: 10°, 7°
+(43, 3, 6, 7,  '2026-08-04 18:00:00', 13, 11, 'semifinal'),
+(44, 3, 1, 10, '2026-08-04 20:00:00', 10, 13, 'semifinal'),
+
+-- FINAL
+(45, 3, 6, 10, '2026-08-05 20:00:00', 13, 9, 'final');
+
+-- 12. Poblar Estadísticas Individuales para las partidas del Torneo 3
+WITH jugadores_partida AS (
+    SELECT
+        p.id AS partida_id,
+        p.equipo_a_id,
+        p.equipo_b_id,
+        p.puntaje_a,
+        p.puntaje_b,
+        j.gamertag,
+        j.equipo_id,
+        ROW_NUMBER() OVER (
+            PARTITION BY p.id, j.equipo_id
+            ORDER BY j.gamertag
+        ) AS rn
+    FROM Partidas p
+    JOIN Jugadores j
+      ON j.equipo_id IN (p.equipo_a_id, p.equipo_b_id)
+    WHERE p.torneo_id = 3
+)
+INSERT INTO Estadisticas_Individuales
+(partida_id, jugador_gamertag, kos, restarts, assists)
+SELECT
+    partida_id,
+    gamertag,
+    CASE
+        WHEN (equipo_id = equipo_a_id AND puntaje_a > puntaje_b)
+          OR (equipo_id = equipo_b_id AND puntaje_b > puntaje_a)
+            THEN 18 - rn
+        ELSE 12 - rn
+    END AS kos,
+    CASE
+        WHEN (equipo_id = equipo_a_id AND puntaje_a > puntaje_b)
+          OR (equipo_id = equipo_b_id AND puntaje_b > puntaje_a)
+            THEN 5 + rn
+        ELSE 9 + rn
+    END AS restarts,
+    CASE
+        WHEN (equipo_id = equipo_a_id AND puntaje_a > puntaje_b)
+          OR (equipo_id = equipo_b_id AND puntaje_b > puntaje_a)
+            THEN 4 + rn
+        ELSE 3 + rn
+    END AS assists
+FROM jugadores_partida
+ORDER BY partida_id, equipo_id, rn;
 -- (Se deben agregar las estadísticas para todos los jugadores participantes en cada partida creada) [cite: 64]
