@@ -2,9 +2,13 @@
 from dotenv import load_dotenv
 import os
 import psycopg2
+from pathlib import Path
+import traceback
+
 #Intenta establecer una conexión con la base de datos utilizando las credenciales proporcionadas
 
-load_dotenv()
+env_path = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(dotenv_path=env_path, encoding="utf-8")
 
 def get_connection():
     try:
@@ -19,5 +23,7 @@ def get_connection():
         return conn
 
     except Exception as e:
-        print(f"Error detallado al conectar a la base de datos:\n{e}")
+        print("TIPO DE ERROR:", type(e))
+        print("REPR DEL ERROR:", repr(e))
+        traceback.print_exc()
         return None
