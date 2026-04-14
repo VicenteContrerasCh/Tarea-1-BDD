@@ -40,14 +40,16 @@ Sigue estos pasos para desplegar el proyecto en tu entorno local.
    # (Asegúrate de estar en el directorio correcto o usa la interfaz de tu editor)
    psql -U postgres -d TareaBDD1 -f esquema.sql
    psql -U postgres -d TareaBDD1 -f data.sql
-## 🚀 Levantamiento de la Aplicación
+## Levantamiento de la Aplicación
 
 Tras descomprimir el archivo, abrir una terminal en la raíz del proyecto y ejecutar los siguientes comandos para levantar el sistema:
 
 1. Ingresar al directorio principal:
+```bash
 cd app
 pip install flask psycopg2-binary python-dotenv
 python app.py
+```
 Nota de despliegue: La aplicación quedará disponible en http://127.0.0.1:5000/. Para el correcto funcionamiento de este paso, se asume que el servicio de PostgreSQL está en ejecución y que la base de datos fue creada y poblada previamente utilizando los archivos correspondientes (schema.sql y data.sql).
 ## Estructura de Archivos y Directorios
 
