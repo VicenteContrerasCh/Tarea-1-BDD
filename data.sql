@@ -102,7 +102,8 @@ UPDATE Equipos SET capitan_gamertag = 'GlitchMaster' WHERE id = 10;
 INSERT INTO Torneos (id, nombre, titulo_videojuego, fecha_inicio, fecha_fin, prize_pool_usd, max_equipos) VALUES
 (1, 'Copa Galáctica 2026', 'Valorant', '2026-06-01', '2026-06-15', 50000.00, 8),
 (2, 'Liga de Leyendas Sur', 'League of Legends', '2026-07-01', '2026-07-20', 75000.00, 8),
-(3, 'Torneo Relámpago', 'Rocket League', '2026-08-01', '2026-08-05', 10000.00, 8);
+(3, 'Torneo Relámpago', 'Rocket League', '2026-08-01', '2026-08-05', 10000.00, 8),
+(4, 'Liga chilena', 'Fifa', '2026-08-02', '2026-08-05', 100000.00, 8);
 
 -- 5. Poblar Inscripciones (Inscribiendo 8 equipos en el Torneo 1 para llenarlo) [cite: 60]
 INSERT INTO Inscripciones (torneo_id, equipo_id) VALUES
